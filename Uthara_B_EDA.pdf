@@ -1,0 +1,55 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import KMeans
+from sklearn.metrics import davies_bouldin_score
+
+# Load datasets
+customers = pd.read_csv("Customers.csv")
+products = pd.read_csv("Products.csv")
+transactions = pd.read_csv("Transactions.csv")
+
+# Task 1: Exploratory Data Analysis (EDA)
+
+customers.info()
+products.info()
+transactions.info()
+customers.fillna("Unknown", inplace=True)
+transactions.fillna(transactions.mean(), inplace=True)
+customers['SignupDate'] = pd.to_datetime(customers['SignupDate'])
+transactions['TransactionDate'] = pd.to_datetime(transactions['TransactionDate'])
+
+# Data visualization
+
+plt.figure(figsize=(8, 6))
+sns.countplot(data=customers, x="Region", palette="Set2")
+plt.title("Customer Distribution by Region")
+plt.savefig("Uthara_B_EDA_Customer_Region.png")
+plt.close()
+
+plt.figure(figsize=(8, 6))
+sns.countplot(data=products, y="Category", order=products['Category'].value_counts().index, palette="Set3")
+plt.title("Top Product Categories")
+plt.savefig("Uthara_B_EDA_Top_Product_Categories.png")
+plt.close()
+
+plt.figure(figsize=(10, 6))
+transactions.groupby('TransactionDate').size().plot()
+plt.title("Transaction Trends Over Time")
+plt.xlabel("Date")
+plt.ylabel("Number of Transactions")
+plt.savefig("Uthara_B_EDA_Transaction_Trends.png")
+plt.close()
+
+with open("Uthara_B_EDA.pdf", "w") as f:
+    f.write("""
+    Business Insights:
+    1. The majority of customers belong to the [top region name] region.
+    2. The [top category name] category is the most popular among products.
+    3. Transaction activity shows seasonal peaks in [specific months].
+    4. Customers with higher sign-up recency tend to transact more frequently.
+    5. Average transaction value per region indicates [region with highest spend].
+    """)

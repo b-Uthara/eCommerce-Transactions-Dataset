@@ -1,0 +1,23 @@
+# Task 3: Customer Segmentation
+
+kmeans = KMeans(n_clusters=4, random_state=42)
+customer_features["Cluster"] = kmeans.fit_predict(scaled_features)
+
+db_index = davies_bouldin_score(scaled_features, customer_features["Cluster"])
+print(f"Davies-Bouldin Index: {db_index}")
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=customer_features, x=scaled_features[:, 0], y=scaled_features[:, 1], hue="Cluster", palette="viridis")
+plt.title("Customer Clusters")
+plt.savefig("Uthara_B_Clustering.png")
+plt.close()
+
+clustering_report = f"""
+Number of clusters: 4
+Davies-Bouldin Index: {db_index}
+Other Metrics: TBD
+"""
+with open("Uthara_B_Clustering.pdf", "w") as f:
+    f.write(clustering_report)
+
+print(" Outputs saved to respective files.")
